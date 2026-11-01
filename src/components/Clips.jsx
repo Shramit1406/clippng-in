@@ -34,7 +34,8 @@ export function PlatformIcon({ platform, size = 16 }) {
 const Clips = () => {
   const clips = getActiveClips();
   const meta = getSyncMeta();
-  const [activeIndex, setActiveIndex] = useState(0);
+  // Start on the 3rd clip (index 2) by default so both previous and next preview phones are meaningful
+  const [activeIndex, setActiveIndex] = useState(2);
 
   if (clips.length === 0) return null;
 
@@ -194,24 +195,21 @@ const Clips = () => {
             Hire us to clip
           </button>
 
-          {/* Real Computed Stat Strip (No hardcoded numbers) */}
+          {/* Showcase Stat Strip */}
           <div className="grid grid-cols-3 gap-6 border-t border-white/10 pt-8 w-full">
             <div className="flex flex-col">
-              <span className="font-headline text-2xl md:text-3xl">{meta.totalClips}</span>
-              <span className="text-xs text-gray-500 uppercase font-mono">Featured Clips</span>
+              <span className="font-headline text-2xl md:text-3xl">{meta.totalClipsDisplay}</span>
+              <span className="text-xs text-gray-500 uppercase font-mono">Total Clips</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-headline text-2xl md:text-3xl">{formatViewCount(meta.totalViews)}</span>
-              <span className="text-xs text-gray-500 uppercase font-mono">Combined Views</span>
+              <span className="font-headline text-2xl md:text-3xl text-accent">{meta.totalViewsDisplay}</span>
+              <span className="text-xs text-gray-500 uppercase font-mono">Total Views on Clips</span>
             </div>
             <div className="flex flex-col">
               <span className="font-headline text-2xl md:text-3xl">{meta.uniquePlatforms.length}</span>
               <span className="text-xs text-gray-500 uppercase font-mono">Platforms</span>
             </div>
           </div>
-          <p className="text-[11px] font-mono text-gray-500 mt-3">
-            Verified clip views as of {meta.viewsAsOf}
-          </p>
         </div>
 
         {/* Right Side: Stacked Phone Frame Carousel */}
@@ -245,14 +243,11 @@ const Clips = () => {
               {/* Phone Notch */}
               <div className="absolute top-0 inset-x-0 h-6 bg-surface rounded-b-xl w-32 mx-auto z-30 pointer-events-none" />
 
-              {/* Top Overlay: Tap for sound / Platform & Views badge */}
+              {/* Top Overlay: Platform & Handle badge + Tap for sound */}
               <div className="absolute top-7 inset-x-3 z-30 flex items-center justify-between pointer-events-none">
                 <div className="flex items-center gap-1.5 bg-black/75 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-xs font-mono text-white">
                   <PlatformIcon platform={detectPlatform(activeClip)} size={12} />
                   <span>{activeClip.account}</span>
-                  {typeof activeClip.views === 'number' && (
-                    <span className="text-accent font-bold ml-1">• {formatViewCount(activeClip.views)} views</span>
-                  )}
                 </div>
                 <div
                   className="bg-black/75 backdrop-blur-md rounded-full px-2.5 py-1 text-[10px] font-mono text-gray-300 flex items-center gap-1 border border-white/10"
@@ -274,9 +269,7 @@ const Clips = () => {
                     {activeClip.title}
                   </p>
                   <p className="text-[10px] font-mono text-gray-400">
-                    {typeof activeClip.views === 'number'
-                      ? `${activeClip.views.toLocaleString()} views (as of ${activeClip.viewsAsOf})`
-                      : activeClip.account}
+                    {activeClip.account}
                   </p>
                 </div>
                 <a

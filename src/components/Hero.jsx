@@ -65,37 +65,26 @@ const Hero = () => {
           </div>
         </div>
 
-        {/* Verified Stats Row (Computed strictly from real featured clips in clips.generated.json) */}
-        {meta.totalClips > 0 && (
-          <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-14">
-            <div className="flex flex-col items-center border border-white/10 bg-surface/85 backdrop-blur-sm rounded-full px-7 py-3.5 min-w-[200px]">
-              <span className="text-2xl font-headline text-accent mb-0.5">
-                {meta.totalViews.toLocaleString()}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-gray-300 tracking-wider">
-                Views on featured clips (as of {meta.viewsAsOf})
-              </span>
-            </div>
-
-            <div className="flex flex-col items-center border border-white/10 bg-surface/85 backdrop-blur-sm rounded-full px-7 py-3.5 min-w-[160px]">
-              <span className="text-2xl font-headline text-white mb-0.5">
-                {meta.totalClips}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-gray-300 tracking-wider">
-                Featured Clips
-              </span>
-            </div>
-
-            <div className="flex flex-col items-center border border-white/10 bg-surface/85 backdrop-blur-sm rounded-full px-7 py-3.5 min-w-[160px]">
-              <span className="text-2xl font-headline text-white mb-0.5">
-                {meta.uniqueAccounts.length}
-              </span>
-              <span className="text-[11px] font-mono uppercase text-gray-300 tracking-wider">
-                Channels Featured
-              </span>
-            </div>
+        {/* Showcase Stats Row */}
+        <div className="flex flex-wrap justify-center gap-4 md:gap-6 mt-14">
+          <div className="flex flex-col items-center border border-white/10 bg-surface/85 backdrop-blur-sm rounded-full px-7 py-3.5 min-w-[200px]">
+            <span className="text-2xl font-headline text-accent mb-0.5">
+              {meta.totalViewsDisplay}
+            </span>
+            <span className="text-[11px] font-mono uppercase text-gray-300 tracking-wider">
+              Views on All Clips (as of {meta.viewsAsOf})
+            </span>
           </div>
-        )}
+
+          <div className="flex flex-col items-center border border-white/10 bg-surface/85 backdrop-blur-sm rounded-full px-7 py-3.5 min-w-[160px]">
+            <span className="text-2xl font-headline text-white mb-0.5">
+              {meta.totalClipsDisplay}
+            </span>
+            <span className="text-[11px] font-mono uppercase text-gray-300 tracking-wider">
+              Total Clips
+            </span>
+          </div>
+        </div>
       </div>
     </section>
   );

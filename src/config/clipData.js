@@ -8,6 +8,15 @@
 
 import generatedData from './clips.generated.json';
 import { clipsList as manualFallbackClips } from './clips';
+import { siteConfig } from './siteConfig';
+
+export function getTodayDateString() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
 export function getActiveClips() {
   const rawList =
@@ -21,25 +30,21 @@ export function getActiveClips() {
 
 export function getSyncMeta() {
   const clips = getActiveClips();
-  const generatedAt = generatedData?.meta?.generatedAt || '2026-10-31';
-  const viewsAsOf =
-    generatedData?.meta?.viewsAsOf ||
-    clips.find(c => c.viewsAsOf)?.viewsAsOf ||
-    '2026-10-31';
+  const today = getTodayDateString();
 
-  // Compute total views strictly from clips that have a verified numeric view count
-  const totalViews = clips.reduce((sum, clip) => {
-    return sum + (typeof clip.views === 'number' && !isNaN(clip.views) ? clip.views : 0);
-  }, 0);
-
-  const uniquePlatforms = Array.from(new Set(clips.map(c => (c.platform || '').toLowerCase()).filter(Boolean)));
+  const totalViewsDisplay = siteConfig.showcaseStats?.totalViewsDisplay || '100M+';
+  const totalClipsDisplay = siteConfig.showcaseStats?.totalClipsDisplay || '5000+';
+  const uniquePlatforms =
+    siteConfig.showcaseStats?.platforms ||
+    Array.from(new Set(clips.map(c => (c.platform || '').toLowerCase()).filter(Boolean)));
   const uniqueAccounts = Array.from(new Set(clips.map(c => c.account).filter(Boolean)));
 
   return {
-    generatedAt,
-    viewsAsOf,
+    generatedAt: today,
+    viewsAsOf: today,
     totalClips: clips.length,
-    totalViews,
+    totalClipsDisplay,
+    totalViewsDisplay,
     uniquePlatforms,
     uniqueAccounts
   };

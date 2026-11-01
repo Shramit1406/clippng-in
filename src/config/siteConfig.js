@@ -39,6 +39,15 @@ export const siteConfig = {
   },
 
   // ----------------------------------------
+  // 2B. SHOWCASE LIFETIME STATS (#home, #clips, #brands)
+  // ----------------------------------------
+  showcaseStats: {
+    totalViewsDisplay: "100M+",
+    totalClipsDisplay: "5000+",
+    platforms: ["youtube", "tiktok", "instagram", "x"]
+  },
+
+  // ----------------------------------------
   // 3. CONTACT & SOCIALS (#contact)
   // ----------------------------------------
   contact: {

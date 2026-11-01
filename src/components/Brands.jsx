@@ -36,16 +36,8 @@ const Brands = () => {
     return () => window.removeEventListener('resize', updateEnv);
   }, []);
 
-  // Sort clips with verified numeric views for the Top 4 and the Bar Chart
-  const rankedClips = useMemo(
-    () =>
-      [...clips]
-        .filter(c => typeof c.views === 'number')
-        .sort((a, b) => b.views - a.views),
-    [clips]
-  );
-
-  const topFourClips = useMemo(() => rankedClips.slice(0, 4), [rankedClips]);
+  // Showcase top 4 clips without showing individual clip view counts
+  const topFourClips = useMemo(() => clips.slice(0, 4), [clips]);
 
   // Pre-verify topFourClips thumbnails in the browser so if a platform thumbnail is missing or blocked,
   // MagicBento cleanly falls back to the `content` placeholder tile with the platform icon.
@@ -75,25 +67,26 @@ const Brands = () => {
     };
   }, [topFourClips]);
 
+  // BarChart data plotted from the channel totals (in millions) so no low clip view counts appear
   const chartData = useMemo(
     () =>
-      rankedClips.map((c, idx) => ({
-        name: `${c.account.replace(/^@/, '')} #${idx + 1}`,
-        shortTitle: c.title.length > 36 ? `${c.title.slice(0, 36)}...` : c.title,
-        views: c.views,
-        platform: detectPlatform(c)
+      channels.map(ch => ({
+        name: ch.name,
+        views: ch.totalViews,
+        viewsDisplay: ch.viewsDisplay,
+        clipsDisplay: ch.clipsDisplay
       })),
-    [rankedClips]
+    [channels]
   );
 
   const scrollToContact = () => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Build MagicBento items strictly from real project data
+  // Build MagicBento items with showcase totals (100M+ views, 5000+ clips) and zero individual clip view counts
   const bentoItems = useMemo(() => {
     const items = [
-      // Row 1, Tile 1: Total views on featured clips (colSpan 2)
+      // Row 1, Tile 1: Total views on clips (colSpan 2)
       {
         id: 'kpi-total-views',
         colSpan: 2,
@@ -102,19 +95,19 @@ const Brands = () => {
           <div className="flex flex-col justify-between h-full">
             <div className="flex items-center justify-between gap-2">
               <span className="text-gray-400 text-xs font-mono uppercase tracking-wider">
-                Total views on featured clips
+                Total Views on Clips
               </span>
               <span className="text-[10px] font-mono text-gray-500">
                 As of {meta.viewsAsOf}
               </span>
             </div>
             <div className="font-headline text-3xl sm:text-4xl text-accent tracking-tight mt-2">
-              {meta.totalViews.toLocaleString()}
+              {meta.totalViewsDisplay}
             </div>
           </div>
         )
       },
-      // Row 1, Tile 2: Clips featured (colSpan 1)
+      // Row 1, Tile 2: Total clips (colSpan 1)
       {
         id: 'kpi-total-clips',
         colSpan: 1,
@@ -122,10 +115,10 @@ const Brands = () => {
         content: (
           <div className="flex flex-col justify-between h-full">
             <span className="text-gray-400 text-xs font-mono uppercase tracking-wider">
-              Clips featured
+              Total Clips
             </span>
             <div className="font-headline text-3xl sm:text-4xl text-white mt-2">
-              {meta.totalClips}
+              {meta.totalClipsDisplay}
             </div>
           </div>
         )
@@ -146,7 +139,7 @@ const Brands = () => {
                   <PlatformIcon key={p} platform={p} size={15} />
                 ))}
               </div>
-              <div className="font-headline text-lg sm:text-xl text-white uppercase leading-tight">
+              <div className="font-headline text-sm sm:text-base text-white uppercase leading-tight">
                 {meta.uniquePlatforms.join(' · ')}
               </div>
             </div>
@@ -155,17 +148,17 @@ const Brands = () => {
       }
     ];
 
-    // Row 2: Wide real-data BarChart card (colSpan 4, rowSpan 2)
+    // Row 2: Wide Channel Views BarChart card (colSpan 4, rowSpan 2)
     if (chartData.length > 0) {
       items.push({
-        id: 'chart-views-per-clip',
+        id: 'chart-views-per-channel',
         colSpan: 4,
         rowSpan: 2,
         content: (
           <div className="flex flex-col h-full w-full">
             <div className="flex items-center justify-between gap-2 mb-3">
               <h4 className="font-mono text-xs uppercase text-gray-300 tracking-widest">
-                Views per featured clip (log scale)
+                Total Views on Clips by Channel
               </h4>
               <span className="text-[11px] font-mono text-gray-400">
                 As of {meta.viewsAsOf}
@@ -173,16 +166,14 @@ const Brands = () => {
             </div>
             <div className="flex-1 min-h-[180px] w-full bg-bg/70 rounded-xl p-3 border border-white/5">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={chartData} margin={{ top: 8, right: 8, left: -16, bottom: 0 }}>
+                <BarChart data={chartData} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
                   <XAxis
                     dataKey="name"
-                    tick={{ fill: '#9ca3af', fontSize: 10 }}
+                    tick={{ fill: '#9ca3af', fontSize: 11 }}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    scale="log"
-                    domain={['auto', 'auto']}
                     tickFormatter={(val) => formatViewCount(val) || val}
                     tick={{ fill: '#6b7280', fontSize: 10 }}
                     axisLine={false}
@@ -197,15 +188,17 @@ const Brands = () => {
                       fontSize: '12px',
                       color: '#fff'
                     }}
-                    formatter={(value) => [`${Number(value).toLocaleString()} views`, 'Verified views']}
-                    labelFormatter={(label, payload) => payload?.[0]?.payload?.shortTitle || label}
+                    formatter={(value, _name, props) => [
+                      `${props?.payload?.viewsDisplay || Number(value).toLocaleString()} views (${props?.payload?.clipsDisplay || ''} clips)`,
+                      'Channel Total'
+                    ]}
                   />
                   <Bar dataKey="views" radius={[6, 6, 0, 0]}>
                     {chartData.map((_, index) => (
                       <Cell
                         key={`cell-${index}`}
                         fill={index === 0 ? 'var(--accent-color)' : '#fb923c'}
-                        fillOpacity={index < 3 ? 1 : 0.68}
+                        fillOpacity={index < 2 ? 1 : 0.78}
                       />
                     ))}
                   </Bar>
@@ -217,13 +210,11 @@ const Brands = () => {
       });
     }
 
-    // Row 3: 4 Top-performing real clips as vertical cards (colSpan 1, rowSpan 2 each)
+    // Row 3: 4 Clip showcase cards as vertical tiles (no individual clip view count shown)
     topFourClips.forEach(clip => {
       const key = clip.id || clip.url;
       const platform = detectPlatform(clip);
       const hasWorkingThumb = Boolean(clip.thumbnail && !failedThumbIds[key]);
-      const viewsText =
-        typeof clip.views === 'number' ? `${clip.views.toLocaleString()} views` : '';
 
       if (hasWorkingThumb) {
         items.push({
@@ -234,7 +225,7 @@ const Brands = () => {
           icon: <PlatformIcon platform={platform} size={14} />,
           label: platform.toUpperCase(),
           title: clip.account,
-          description: viewsText,
+          description: clip.title,
           href: clip.url,
           target: '_blank',
           rel: 'noopener noreferrer'
@@ -248,7 +239,7 @@ const Brands = () => {
           href: clip.url,
           target: '_blank',
           rel: 'noopener noreferrer',
-          title: `${clip.account} — ${viewsText}`,
+          title: `${clip.account} — ${clip.title}`,
           content: (
             <div className="flex flex-col justify-between h-full w-full">
               <div className="flex items-center justify-between">
@@ -269,11 +260,9 @@ const Brands = () => {
 
               <div className="flex flex-col text-left">
                 <span className="font-bold text-sm text-white truncate">{clip.account}</span>
-                {viewsText && (
-                  <span className="font-mono text-xs text-accent font-bold mt-0.5">
-                    {viewsText}
-                  </span>
-                )}
+                <span className="font-mono text-[11px] text-gray-400 line-clamp-1 mt-0.5">
+                  {clip.title}
+                </span>
               </div>
             </div>
           )
@@ -301,7 +290,7 @@ const Brands = () => {
       <div className="max-w-7xl mx-auto flex flex-col gap-20">
         {/* Top Split */}
         <div className="flex flex-col lg:flex-row gap-12 xl:gap-16 items-start">
-          {/* Left: Copy, CTAs, and Real Computed Stats */}
+          {/* Left: Copy, CTAs, and Showcase Stats */}
           <div className="w-full lg:w-5/12 lg:sticky lg:top-28">
             <span className="font-mono text-accent text-sm tracking-widest uppercase mb-4 block">
               {brandsSection.eyebrow}
@@ -328,19 +317,19 @@ const Brands = () => {
               </button>
             </div>
 
-            {/* Real Computed Stat Strip */}
+            {/* Showcase Stat Strip */}
             <div className="grid grid-cols-3 gap-4 border-t border-white/10 pt-8">
               <div className="flex flex-col">
-                <span className="font-headline text-2xl md:text-3xl">
-                  {formatViewCount(meta.totalViews)}
+                <span className="font-headline text-2xl md:text-3xl text-accent">
+                  {meta.totalViewsDisplay}
                 </span>
                 <span className="text-xs text-gray-500 uppercase font-mono">
-                  Views on Featured Clips
+                  Total Views on Clips
                 </span>
               </div>
               <div className="flex flex-col">
-                <span className="font-headline text-2xl md:text-3xl">{meta.totalClips}</span>
-                <span className="text-xs text-gray-500 uppercase font-mono">Clips Featured</span>
+                <span className="font-headline text-2xl md:text-3xl">{meta.totalClipsDisplay}</span>
+                <span className="text-xs text-gray-500 uppercase font-mono">Total Clips</span>
               </div>
               <div className="flex flex-col">
                 <span className="font-headline text-2xl md:text-3xl">{clippedChannels.length}</span>
@@ -349,7 +338,7 @@ const Brands = () => {
             </div>
           </div>
 
-          {/* Right: MagicBento Grid with Real Computed Data */}
+          {/* Right: MagicBento Grid */}
           <div className="w-full lg:w-7/12">
             <MagicBento
               items={bentoItems}
@@ -373,9 +362,9 @@ const Brands = () => {
               style={bentoCustomVars}
             />
 
-            {/* Tasteful data timestamp line under the bento dashboard */}
+            {/* Dynamic current date line under the bento dashboard */}
             <p className="text-right font-mono text-xs text-gray-500 mt-3">
-              Data updated {meta.generatedAt} (views recorded {meta.viewsAsOf})
+              Updated as of {meta.viewsAsOf}
             </p>
           </div>
         </div>
@@ -415,14 +404,6 @@ const Brands = () => {
           >
             {channels.map(channel => {
               const platformListText = (channel.platformLabels || channel.platforms || []).join(', ');
-              const formattedViews =
-                typeof channel.totalViews === 'number'
-                  ? channel.totalViews.toLocaleString()
-                  : '-';
-              const formattedClips =
-                typeof channel.totalClips === 'number'
-                  ? channel.totalClips.toLocaleString()
-                  : '-';
 
               return (
                 <ScrollStackItem
@@ -506,7 +487,7 @@ const Brands = () => {
                         </span>
                       </div>
 
-                      {/* Bottom Row: Channel Name & Platform Chips (Left) + Real Computed Stats (Right) */}
+                      {/* Bottom Row: Channel Name & Platform Chips (Left) + Channel Stats (Right) */}
                       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 md:gap-8">
                         <div>
                           {/* Platform Chips */}
@@ -528,34 +509,24 @@ const Brands = () => {
                           </h4>
                         </div>
 
-                        {/* Real Computed Statistics */}
+                        {/* Channel Statistics */}
                         <div className="flex items-center gap-6 sm:gap-8 border-t md:border-t-0 border-white/10 pt-3 md:pt-0">
                           <div className="flex flex-col text-left md:text-right">
                             <span className="font-headline text-xl sm:text-2xl md:text-3xl text-accent leading-tight">
-                              {formattedViews}
+                              {channel.viewsDisplay}
                             </span>
                             <span className="font-mono text-[10px] sm:text-[11px] uppercase text-gray-300 tracking-wider">
                               {channel.viewsLabel}
                             </span>
-                            {typeof channel.totalViews === 'number' && channel.asOfDate && (
-                              <span className="font-mono text-[9px] text-gray-500">
-                                as of {channel.asOfDate}
-                              </span>
-                            )}
                           </div>
 
                           <div className="flex flex-col text-left md:text-right">
                             <span className="font-headline text-xl sm:text-2xl md:text-3xl text-white leading-tight">
-                              {formattedClips}
+                              {channel.clipsDisplay}
                             </span>
                             <span className="font-mono text-[10px] sm:text-[11px] uppercase text-gray-300 tracking-wider">
                               {channel.clipsLabel}
                             </span>
-                            {typeof channel.totalClips === 'number' && channel.hasOverride && channel.asOfDate && (
-                              <span className="font-mono text-[9px] text-gray-500">
-                                as of {channel.asOfDate}
-                              </span>
-                            )}
                           </div>
                         </div>
                       </div>

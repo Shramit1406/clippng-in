@@ -8,7 +8,7 @@
     "sync": "node scripts/sync-clips.js",
     "sync:force": "node scripts/sync-clips.js --force",
     "logo": "node scripts/process-logo.js",
-    "build": "node scripts/sync-clips.js && vite build",
+    "build": "vite build",
     "preview": "vite preview"
   },
   "dependencies": {

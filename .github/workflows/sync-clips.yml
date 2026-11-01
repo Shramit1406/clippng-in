@@ -15,10 +15,7 @@
 name: Sync Clips Data
 
 on:
-  schedule:
-    # Runs daily at 08:00 UTC
-    - cron: '0 8 * * *'
-  workflow_dispatch: # Allows manual one-click run from GitHub Actions tab
+  workflow_dispatch: # Manual run only (live sync disabled; site uses static showcase totals)
 
 permissions:
   contents: write
