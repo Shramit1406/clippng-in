@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "generatedAt": "2026-11-01",
+    "viewsAsOf": "2026-10-31",
+    "totalClips": 8,
+    "countsBySource": {
+      "pinned": 0,
+      "watchlist": 2,
+      "auto": 6
+    },
+    "countsByPlatform": {
+      "youtube": 6,
+      "tiktok": 2
+    },
+    "warnings": [
+      "Skipped empty watchlist TODO slot for @clipsonchain: \"TODO: paste best clip\"",
+      "Skipped empty watchlist TODO slot for @MCGlive: \"TODO: paste best clip\"",
+      "Skipped empty watchlist TODO slot for @mcglivestream: \"TODO: paste best clip\"",
+      "No active watchlist URLs found for @MCGlive (x). Paste clip URLs in src/config/watchlist.js.",
+      "No active watchlist URLs found for @mcglivestream (instagram). Paste clip URLs in src/config/watchlist.js.",
+      "No active watchlist URLs found for @clipsonchain (tiktok). Paste clip URLs in src/config/watchlist.js."
+    ]
+  },
+  "clips": [
+    {
+      "id": "yt-evShWOsXzug",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/shorts/evShWOsXzug",
+      "title": "He retired his parents with million dollars and they are still mad about him dropping out",
+      "account": "@MCG_live",
+      "thumbnail": "https://i.ytimg.com/vi/evShWOsXzug/hqdefault.jpg",
+      "views": 1100,
+      "viewsAsOf": "2026-10-31",
+      "source": "auto"
+    },
+    {
+      "id": "yt-4oqV5hOho9M",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/shorts/4oqV5hOho9M",
+      "title": "YT Short 3",
+      "account": "@MCG_live",
+      "thumbnail": "https://i.ytimg.com/vi/4oqV5hOho9M/hqdefault.jpg",
+      "views": 901,
+      "viewsAsOf": "2026-10-31",
+      "source": "auto"
+    },
+    {
+      "id": "yt-Yar_9CgeJ8Y",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/shorts/Yar_9CgeJ8Y",
+      "title": "$STABLE Liquidity For Homeowners, Home Equity Market On-Chain, TAM $35 Trillion!!!",
+      "account": "@MCG_live",
+      "thumbnail": "https://i.ytimg.com/vi/Yar_9CgeJ8Y/hqdefault.jpg",
+      "views": 890,
+      "viewsAsOf": "2026-10-31",
+      "source": "auto"
+    },
+    {
+      "id": "yt-9DWdnNQVMFc",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/shorts/9DWdnNQVMFc",
+      "title": "$ORGO Computer-Using Agents Have Replaced Workers!!!",
+      "account": "@MCG_live",
+      "thumbnail": "https://i.ytimg.com/vi/9DWdnNQVMFc/hqdefault.jpg",
+      "views": 686,
+      "viewsAsOf": "2026-10-31",
+      "source": "auto"
+    },
+    {
+      "id": "yt-ES9dG4Hc79s",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/shorts/ES9dG4Hc79s",
+      "title": "We Called Soulja Boy On Stream.....Or Rather His AI Automated Voice!!!",
+      "account": "@MCG_live",
+      "thumbnail": "https://i.ytimg.com/vi/ES9dG4Hc79s/hqdefault.jpg",
+      "views": 659,
+      "viewsAsOf": "2026-10-31",
+      "source": "auto"
+    },
+    {
+      "id": "yt-ZLqOIamVyC4",
+      "platform": "youtube",
+      "url": "https://www.youtube.com/shorts/ZLqOIamVyC4",
+      "title": "this is KIMCHI'S real STORY!",
+      "account": "@MCG_live",
+      "thumbnail": "https://i.ytimg.com/vi/ZLqOIamVyC4/hqdefault.jpg",
+      "views": 403,
+      "viewsAsOf": "2026-10-31",
+      "source": "auto"
+    },
+    {
+      "id": "tt-7647968717078367519",
+      "platform": "tiktok",
+      "url": "https://www.tiktok.com/@pumpfunplug/video/7647968717078367519",
+      "title": "Is dropping out worth it? #orangie #kimchi #trade #dropout",
+      "account": "@pumpfunplug",
+      "thumbnail": "https://www.tiktok.com/api/img/?itemId=7647968717078367519&location=0&aid=1988",
+      "views": 256700,
+      "viewsAsOf": "2026-10-31",
+      "source": "watchlist"
+    },
+    {
+      "id": "tt-7584104962372799775",
+      "platform": "tiktok",
+      "url": "https://www.tiktok.com/@pump.moments/video/7584104962372799775",
+      "title": "Clav speed dating is a different breed #pumpfun #clav #clavicular",
+      "account": "@pump.moments",
+      "thumbnail": "https://www.tiktok.com/api/img/?itemId=7584104962372799775&location=0&aid=1988",
+      "views": 17200,
+      "viewsAsOf": "2026-10-31",
+      "source": "watchlist"
+    }
+  ]
+}
